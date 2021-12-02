@@ -4,58 +4,73 @@ import {
   AudioPlayerStatus,
   createAudioPlayer,
   createAudioResource,
+  getVoiceConnection,
   joinVoiceChannel,
+  VoiceConnection,
 } from '@discordjs/voice';
 import { join } from 'path';
+import audioClips from '../../utils/sounds/sounds';
 
 const AudioRouter = async (interaction: CommandInteraction, client) => {
   const { commandName, options } = interaction;
-  console.log('hej');
-  if (!interaction.guild) {
-    return null;
+  const { connection, player } = await setupVoiceConnection(interaction);
+
+  /* TODO: Make this dynamic from search input */
+  const commandQuery = options.getString('clip');
+  const file = audioClips.find((clip) => clip.name === commandQuery);
+
+  if (!file) {
+    await interaction.reply(`I am sorry, but that clip doesn't exist, try with /random`);
+    return;
   }
+  const clip = createAudioResource(join(require.main?.path + '/assets/', file.filename));
+  player.play(clip);
+  connection.subscribe(player);
+  await interaction.reply(`Here you go mongo, your favorite ${file.name} clip`);
+
+  player.on(AudioPlayerStatus.Idle, () => {
+    connection.disconnect();
+  });
+};
+
+/**
+ * Returns the Audio player and the connection to the channel.
+ * @param interaction CommandInteraction.
+ * @returns Audio player and Channel connection.
+ */
+const setupVoiceConnection = async (
+  interaction: CommandInteraction,
+): Promise<{ connection: VoiceConnection; player: AudioPlayer }> => {
+  if (!interaction.guild) {
+    throw new Error('Guild is missing, Fuck!');
+  }
+
+  /**
+   * Retrieve which channel the user is in.
+   */
   const member = interaction.guild.members.cache.get(interaction.member.user.id);
   const voiceChannel = member?.voice.channel;
-  console.log(member?.user.username);
-  console.log(voiceChannel?.id);
 
+  /**
+   * Checks if the user is in a voice channel when writing the command.
+   */
   let channelId = '';
   if (voiceChannel instanceof VoiceChannel) {
     channelId = voiceChannel.id;
+  } else {
+    await interaction.reply('You are not in a voice channel dumbo...');
   }
 
-  switch (options.getString('search')) {
-    case 'GussCarry': {
-      try {
-        console.log(join(__dirname + '/assets/', 'GussHeal.mp3'));
+  /**
+   * Creates the audio player and connection
+   */
+  const player = createAudioPlayer();
+  const connection = joinVoiceChannel({
+    channelId: channelId,
+    guildId: process.env.GUILD_ID_TEST || '',
+    adapterCreator: interaction.guild.voiceAdapterCreator,
+  });
 
-        const player = createAudioPlayer();
-
-        const clip = createAudioResource(join(__dirname + '/assets/', 'GussHeal.mp3'));
-        //const clip = createAudioResource(
-        //  'https://cdn.discordapp.com/attachments/456207515676573716/915730447697338368/Sov_Sov_Coffe_mp3cut.net.mp3',
-        //);
-
-        const connection = joinVoiceChannel({
-          channelId: channelId,
-          guildId: process.env.GUILD_ID_TEST || '',
-          adapterCreator: interaction.guild.voiceAdapterCreator,
-        });
-        player.play(clip);
-        connection.subscribe(player);
-        player.on(AudioPlayerStatus.Idle, () => {
-          connection.disconnect();
-        });
-      } catch (error) {
-        console.log(error);
-      }
-      await interaction.reply('Playin');
-      break;
-    }
-
-    default:
-      await interaction.reply('Just default');
-      break;
-  }
+  return { connection, player };
 };
 export default AudioRouter;
