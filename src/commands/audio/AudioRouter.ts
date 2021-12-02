@@ -32,10 +32,6 @@ const AudioRouter = async (interaction: CommandInteraction, client) => {
         const player = createAudioPlayer();
 
         const clip = createAudioResource(join(__dirname + '/assets/', 'GussHeal.mp3'));
-        //const clip = createAudioResource(
-        //  'https://cdn.discordapp.com/attachments/456207515676573716/915730447697338368/Sov_Sov_Coffe_mp3cut.net.mp3',
-        //);
-
         const connection = joinVoiceChannel({
           channelId: channelId,
           guildId: process.env.GUILD_ID_TEST || '',
