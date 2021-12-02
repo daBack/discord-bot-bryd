@@ -24,12 +24,6 @@ const AudioRouter = async (interaction: CommandInteraction, client) => {
     channelId = voiceChannel.id;
   }
 
-  //const subscription = connection.subscribe(player);
-  //if (subscription) {
-  // Unsubscribe after 5 seconds (stop playing audio on the voice connection)
-  //  setTimeout(() => subscription.unsubscribe(), 5_000);
-  // }
-
   switch (options.getString('search')) {
     case 'GussCarry': {
       try {
