@@ -4,7 +4,7 @@ dotenv.config();
 import { Client, Intents, Interaction } from 'discord.js';
 import { AudioRouter } from './commands/audio';
 import { exit } from 'process';
-if (!process.env.GUILD_ID) {
+if (!process.env.GUILD_ID_TEST) {
   exit;
 }
 // Create a new client instance

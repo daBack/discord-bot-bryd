@@ -44,7 +44,7 @@ const AudioRouter = async (interaction: CommandInteraction, client) => {
 
         const connection = joinVoiceChannel({
           channelId: channelId,
-          guildId: process.env.GUILD_ID || '',
+          guildId: process.env.GUILD_ID_TEST || '',
           adapterCreator: interaction.guild.voiceAdapterCreator,
         });
         player.play(clip);
