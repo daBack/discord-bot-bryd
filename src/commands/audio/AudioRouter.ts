@@ -9,7 +9,7 @@ import {
   VoiceConnection,
 } from '@discordjs/voice';
 import { join } from 'path';
-import audioClips from '../../utils/sounds/sounds';
+import { Sounds } from '../../utils/sounds';
 
 const AudioRouter = async (interaction: CommandInteraction, client) => {
   const { commandName, options } = interaction;
@@ -17,7 +17,7 @@ const AudioRouter = async (interaction: CommandInteraction, client) => {
 
   /* TODO: Make this dynamic from search input */
   const commandQuery = options.getString('clip');
-  const file = audioClips.find((clip) => clip.name === commandQuery);
+  const file = Sounds.find((clip) => clip.name === commandQuery);
 
   if (!file) {
     await interaction.reply(`I am sorry, but that clip doesn't exist, try with /random`);

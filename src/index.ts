@@ -1,10 +1,11 @@
 // Require the necessary discord.js classes
 import dotenv from 'dotenv';
 dotenv.config();
-import { Client, Intents, Interaction } from 'discord.js';
+import { Client, EmbedFieldData, Intents, Interaction, MessageEmbed, MessageEmbedOptions } from 'discord.js';
 import { AudioRouter } from './commands/audio';
 import { exit } from 'process';
 import commands from './utils/slashCommands/Commands';
+import { Sounds } from './utils/sounds';
 if (!process.env.GUILD_ID_TEST || !process.env.BOT_TOKEN || !process.env.CLIENT_ID) {
   throw new Error('Procces.env keys are not set. Set them up according to the README file found on github');
   exit;
@@ -34,6 +35,19 @@ client.on('interactionCreate', async (interaction: Interaction) => {
     return;
   }
   switch (commandName) {
+    case 'listclips': {
+      const names = getEmbeddedFieldsOfClips();
+      const embeded = {
+        color: 0x0099ff,
+        title: 'Lista av clips',
+        fields: names,
+      };
+
+      await interaction.reply({
+        embeds: [embeded],
+      });
+      break;
+    }
     case 'coffe':
       await interaction.reply(`Wäääääää :woozy_face:`);
       break;
@@ -57,6 +71,15 @@ client.on('interactionCreate', async (interaction: Interaction) => {
       break;
   }
 });
+
+const getEmbeddedFieldsOfClips = (): EmbedFieldData[] => {
+  const filedArray = Sounds.map((clip) => {
+    const data: EmbedFieldData = { name: clip.name, value: clip.name };
+    return data;
+  });
+  filedArray.unshift({ name: '/clips', value: 'Använd `/clips` i följd av ett clip namn' });
+  return filedArray;
+};
 
 // Login to Discord with your client's token
 client.login(process.env.BOT_TOKEN);

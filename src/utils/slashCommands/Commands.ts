@@ -36,8 +36,8 @@ const commands: ICommand[] = [
     },
   },
   {
-    name: 'list',
-    description: 'A list of all commands this Awesome bot can handle.. for now',
+    name: 'listclips',
+    description: 'A list of all clips this Awesome bot can play.. for now',
   },
 ];
 
