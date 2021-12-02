@@ -9,27 +9,25 @@ import {
   VoiceConnection,
 } from '@discordjs/voice';
 import { join } from 'path';
+import audioClips from '../../utils/sounds/sounds';
 
 const AudioRouter = async (interaction: CommandInteraction, client) => {
   const { commandName, options } = interaction;
   const { connection, player } = await setupVoiceConnection(interaction);
 
   /* TODO: Make this dynamic from search input */
-  const clip = createAudioResource(join(__dirname + '/assets/', 'GussHeal.mp3'));
+  const commandQuery = options.getString('clip');
+  const file = audioClips.find((clip) => clip.name === commandQuery);
 
-  switch (options.getString('search')) {
-    case 'GussCarry': {
-      player.play(clip);
-      connection.subscribe(player);
-
-      await interaction.reply('Playin');
-      break;
-    }
-
-    default:
-      await interaction.reply('Just default');
-      break;
+  if (!file) {
+    await interaction.reply(`I am sorry, but that clip doesn't exist, try with /random`);
+    return;
   }
+  const clip = createAudioResource(join(require.main?.path + '/assets/', file.filename));
+  player.play(clip);
+  connection.subscribe(player);
+  await interaction.reply(`Here you go mongo, your favorite ${file.name} clip`);
+
   player.on(AudioPlayerStatus.Idle, () => {
     connection.disconnect();
   });

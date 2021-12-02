@@ -1,9 +1,18 @@
 import IAudioClips from './types/IAudioClips';
 
-const audio_clips: IAudioClips[] = [
+const audioClips: IAudioClips[] = [
   {
-    name: 'guss_carry',
-    filename: 'guss_carry.mp3',
-    path: '../../../lib/sound/',
+    name: 'gusscarry',
+    filename: 'gussCarry.mp3',
+    path: '/assets/',
+    tags: ['guss', 'carry'],
+  },
+  {
+    name: 'gussheal',
+    filename: 'gussHeal.mp3',
+    path: '/assets/',
+    tags: ['guss', 'heal'],
   },
 ];
+
+export default audioClips;

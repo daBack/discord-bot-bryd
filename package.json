@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon",
-    "update-commands": "npx ts-node ./src/utils/setupCommandsInDiscord.ts",
+    "update-commands": "npx ts-node ./src/utils/slashCommands/setupCommandsInDiscord.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rimraf ./build && npm run update-commands && tsc",
     "start:prod": "npm run build && node build/index.js",
