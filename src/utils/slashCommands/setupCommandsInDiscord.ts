@@ -3,7 +3,6 @@ dotenv.config();
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
 import commands from './Commands';
-import IOptionCommandType from './types/ICommandOption';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import CommandTypeEnum from './enums/CommandTypeEnum';
 
