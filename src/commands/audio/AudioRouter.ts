@@ -9,24 +9,40 @@ import {
   VoiceConnection,
 } from '@discordjs/voice';
 import { join } from 'path';
-import { Sounds } from '../../utils/sounds';
+import { IAudioClips, Sounds } from '../../utils/sounds';
 
 const AudioRouter = async (interaction: CommandInteraction, client) => {
-  const { commandName, options } = interaction;
-  const { connection, player } = await setupVoiceConnection(interaction);
+  const { options } = interaction;
 
-  /* TODO: Make this dynamic from search input */
   const commandQuery = options.getString('clip');
-  const file = Sounds.find((clip) => clip.name === commandQuery);
+
+  let file: IAudioClips | undefined;
+  switch (commandQuery) {
+    case 'random':
+      file = Sounds[Math.floor(Math.random() * Sounds.length)];
+      break;
+    default:
+      file = Sounds.find((clip) => clip.name === commandQuery);
+      break;
+  }
 
   if (!file) {
-    await interaction.reply(`I am sorry, but that clip doesn't exist, try with /random`);
+    await interaction.reply(`I am sorry, but that clip doesn't exist, try with /play random`);
     return;
   }
+
+  const voiceConnection = await setupVoiceConnection(interaction);
+  if (!voiceConnection) {
+    return;
+  }
+  const { connection, player } = voiceConnection || null;
   const clip = createAudioResource(join(require.main?.path + '/assets/', file.filename));
   player.play(clip);
   connection.subscribe(player);
-  await interaction.reply(`Here you go mongo, your favorite ${file.name} clip`);
+  await interaction.reply({
+    content: `Here you go ${interaction.member.user.username}, your favorite ${file.name} clip`,
+    ephemeral: true,
+  });
 
   player.on(AudioPlayerStatus.Idle, () => {
     connection.disconnect();
@@ -40,7 +56,7 @@ const AudioRouter = async (interaction: CommandInteraction, client) => {
  */
 const setupVoiceConnection = async (
   interaction: CommandInteraction,
-): Promise<{ connection: VoiceConnection; player: AudioPlayer }> => {
+): Promise<{ connection: VoiceConnection; player: AudioPlayer } | null> => {
   if (!interaction.guild) {
     throw new Error('Guild is missing, Fuck!');
   }
@@ -59,6 +75,7 @@ const setupVoiceConnection = async (
     channelId = voiceChannel.id;
   } else {
     await interaction.reply('You are not in a voice channel dumbo...');
+    return null;
   }
 
   /**
@@ -73,4 +90,5 @@ const setupVoiceConnection = async (
 
   return { connection, player };
 };
+
 export default AudioRouter;

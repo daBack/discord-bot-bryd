@@ -1,7 +1,15 @@
 // Require the necessary discord.js classes
 import dotenv from 'dotenv';
 dotenv.config();
-import { Client, EmbedFieldData, Intents, Interaction, MessageEmbed, MessageEmbedOptions } from 'discord.js';
+import {
+  Client,
+  CommandInteraction,
+  EmbedFieldData,
+  Intents,
+  Interaction,
+  MessageEmbed,
+  MessageEmbedOptions,
+} from 'discord.js';
 import { AudioRouter } from './commands/audio';
 import { exit } from 'process';
 import commands from './utils/slashCommands/Commands';
@@ -30,13 +38,21 @@ client.on('interactionCreate', async (interaction: Interaction) => {
   if (!interaction.isCommand()) return;
   const { commandName } = interaction;
 
+  /**
+   * Plays specific sound on search
+   */
   if (commandName.startsWith('play')) {
     AudioRouter(interaction, client);
     return;
   }
   switch (commandName) {
+    /**
+     * Lists the viable clips
+     */
     case 'listclips': {
       const names = getEmbeddedFieldsOfClips();
+      console.log(names.length / 25);
+
       const embeded = {
         color: 0x0099ff,
         title: 'Lista av clips',
@@ -46,6 +62,8 @@ client.on('interactionCreate', async (interaction: Interaction) => {
       await interaction.reply({
         embeds: [embeded],
       });
+      await getFollowUpMessage(interaction, names);
+
       break;
     }
     case 'coffe':
@@ -55,7 +73,7 @@ client.on('interactionCreate', async (interaction: Interaction) => {
       await interaction.reply(`HETS! :mechanical_arm:`);
       break;
     case 'guss':
-      await interaction.reply(`Köper högt säljer lågt :money_bag:`);
+      await interaction.reply(`Köper högt säljer lågt :moneybag:`);
       break;
     case 'jonte':
       await interaction.reply(`Han tycker att alla har NOLL KOLL! :eyes:`);
@@ -72,12 +90,36 @@ client.on('interactionCreate', async (interaction: Interaction) => {
   }
 });
 
+const getFollowUpMessage = async (interaction: CommandInteraction, names) => {
+  let newNamesList: EmbedFieldData[] = [];
+  if (names.length / 25 > 1) {
+    console.log(names);
+
+    newNamesList = names.slice(25, -1);
+    console.log(newNamesList);
+
+    if (newNamesList.length / 25 > 1) {
+      getFollowUpMessage(interaction, newNamesList);
+    } else {
+      await interaction.followUp({
+        embeds: [
+          {
+            color: 0x0099ff,
+            title: 'Mer clips...',
+            fields: newNamesList,
+          },
+        ],
+      });
+    }
+  }
+};
+
 const getEmbeddedFieldsOfClips = (): EmbedFieldData[] => {
   const filedArray = Sounds.map((clip) => {
-    const data: EmbedFieldData = { name: clip.name, value: clip.name };
+    const data: EmbedFieldData = { name: clip.name, value: '_____', inline: true };
     return data;
   });
-  filedArray.unshift({ name: '/clips', value: 'Använd `/clips` i följd av ett clip namn' });
+  filedArray.unshift({ name: '/clips', value: 'Använd `/play` i följd av ett clip namn' });
   return filedArray;
 };
 

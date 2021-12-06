@@ -28,7 +28,7 @@ const commands: ICommand[] = [
   },
   {
     name: 'play',
-    description: 'Play a known sound (eg. gussCarry)',
+    description: 'Play a known sound (eg. gusscarry)',
     option: {
       type: CommandTypeEnum.string,
       name: 'clip',
