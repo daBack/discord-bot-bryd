@@ -10,37 +10,120 @@ import {
 } from '@discordjs/voice';
 import { join } from 'path';
 import { IAudioClips, Sounds } from '../../utils/sounds';
+import { initializeFirebase } from '../../utils/firebase';
+import { FirebaseApp } from 'firebase/app';
+import { getDownloadURL, getStorage, listAll, ref } from 'firebase/storage';
+
+interface IAudioRouterUrlType {
+  downloadUrl: string;
+  name: string;
+}
 
 const AudioRouter = async (interaction: CommandInteraction, client) => {
   const { options } = interaction;
-
   const commandQuery = options.getString('clip');
 
-  let file: IAudioClips | undefined;
+  /**
+   * Creating firebase storage app.
+   */
+
+  let firebaseApp: FirebaseApp;
+  try {
+    firebaseApp = initializeFirebase();
+  } catch (error) {
+    throw new Error(`Could not initialize firebase storage. Error: ${error}`);
+  }
+
+  let clip: IAudioRouterUrlType | null;
   switch (commandQuery) {
-    case 'random':
-      file = Sounds[Math.floor(Math.random() * Sounds.length)];
-      break;
+    // case 'random':
+    //   clip = await getRandomClip(interaction);
+    //   break;
     default:
-      file = Sounds.find((clip) => clip.name === commandQuery);
+      clip = await getClip({ commandQuery: commandQuery!, firebaseApp });
       break;
   }
 
-  if (!file) {
-    await interaction.reply(`I am sorry, but that clip doesn't exist, try with /play random`);
+  if (!clip) {
+    await interaction.reply('Nu sökte du på något dumt.. detta clippet finns inte :man_shrugging:');
     return;
   }
+  playSound({ clip: clip!, interaction: interaction });
+};
+
+/**
+ * Get clip from firebase.
+ * @param options Options.
+ * @returns Nothing
+ */
+const getClip = async (options: {
+  commandQuery: string;
+  firebaseApp: FirebaseApp;
+}): Promise<IAudioRouterUrlType | null> => {
+  const { commandQuery, firebaseApp } = options;
+
+  const storage = getStorage(firebaseApp);
+  const clip = Sounds.find((clip) => commandQuery === clip.name);
+  const pathRef = ref(storage, `clips/${clip?.filename}`);
+  let downloadUrl: string;
+  try {
+    downloadUrl = await getDownloadURL(pathRef);
+    if (!downloadUrl || !clip) {
+      return null;
+    }
+    return {
+      downloadUrl: downloadUrl,
+      name: clip.name,
+    };
+  } catch (error) {
+    return null;
+  }
+};
+/**
+ * Get random sound
+ * @param options Options.
+ * @returns Nothing
+ */
+const getRandomClip = async (interaction): Promise<object | null> => {
+  await interaction.reply(`Urgh... ska ja implementera detta också....`);
+  return null;
+  // const storage = getStorage(firebaseApp);
+  // const listRef = ref(storage, 'clips');
+  // interaction.deferReply();
+
+  // const res = await listAll(listRef);
+
+  // const clipFilename = Sounds.find((clip) => {
+  //   console.log(commandQuery, clip.filename);
+  //   return commandQuery === clip.name;
+  // });
+  // console.log(clipFilename);
+
+  // if (!clipFilename) {
+  //   return null;
+  // }
+  // const clipRef = res.items.find((itemRef) => itemRef.name === clipFilename.filename);
+};
+
+/**
+ * Plays the clip in the discord channel.
+ *
+ * @param options
+ * @returns Void.
+ */
+const playSound = async (options: { clip: IAudioRouterUrlType; interaction: CommandInteraction }): Promise<void> => {
+  const { clip, interaction } = options;
 
   const voiceConnection = await setupVoiceConnection(interaction);
   if (!voiceConnection) {
     return;
   }
   const { connection, player } = voiceConnection || null;
-  const clip = createAudioResource(join(require.main?.path + '/assets/', file.filename));
-  player.play(clip);
+  const audioResource = createAudioResource(clip.downloadUrl);
+  player.play(audioResource);
   connection.subscribe(player);
   await interaction.reply({
-    content: `Here you go ${interaction.member.user.username}, your favorite ${file.name} clip`,
+    content: `Here you go ${interaction.member.user.username}, your favorite ${clip.name} clip`,
     ephemeral: true,
   });
 
@@ -84,7 +167,7 @@ const setupVoiceConnection = async (
   const player = createAudioPlayer();
   const connection = joinVoiceChannel({
     channelId: channelId,
-    guildId: process.env.GUILD_ID_BRYD || '',
+    guildId: process.env.GUILD_ID_TEST || '',
     adapterCreator: interaction.guild.voiceAdapterCreator,
   });
 

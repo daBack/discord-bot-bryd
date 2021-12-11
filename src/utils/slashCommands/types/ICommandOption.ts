@@ -1,4 +1,4 @@
-import CommandTypeEnum from './CommandTypeEnum';
+import CommandTypeEnum from './../enums/CommandTypeEnum';
 
 export default interface ICommandType {
   type: CommandTypeEnum;

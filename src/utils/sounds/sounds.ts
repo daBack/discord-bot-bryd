@@ -135,12 +135,6 @@ const audioClips: IAudioClips[] = [
     tags: [TagEnum.guss, TagEnum.game],
   },
   {
-    name: 'bomb',
-    filename: 'bomb.mp3',
-    path: '/assets/',
-    tags: [TagEnum.bäck, TagEnum.guss, TagEnum.game],
-  },
-  {
     name: 'jontekommer',
     filename: 'jontekommer.mp3',
     path: '/assets/',

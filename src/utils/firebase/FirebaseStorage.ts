@@ -1,5 +1,5 @@
 import { FirebaseApp } from '@firebase/app';
-import { getStorage, ref, uploadBytes } from 'firebase/storage';
+import { getStorage, ref, uploadBytes, UploadMetadata } from 'firebase/storage';
 import initializeFirebase from './InitializeFirebase';
 import fs from 'fs';
 import { Sounds } from '../sounds';
@@ -19,7 +19,10 @@ Sounds.forEach(async (clip) => {
 
   try {
     const storageRef = ref(storage, `clips/${clip.filename}`);
-    await uploadBytes(storageRef, soundFile);
+    const metadata: UploadMetadata = {
+      contentDisposition: `name="${clip.name}"`,
+    };
+    await uploadBytes(storageRef, soundFile, metadata);
     console.log(`Successfully uploaded ${clip.filename} to Firebase`);
   } catch (error) {
     throw new Error(`Could not upload file to firebase storage, Error: ${error}`);
