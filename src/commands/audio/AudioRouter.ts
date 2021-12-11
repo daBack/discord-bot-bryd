@@ -84,7 +84,7 @@ const setupVoiceConnection = async (
   const player = createAudioPlayer();
   const connection = joinVoiceChannel({
     channelId: channelId,
-    guildId: process.env.GUILD_ID_TEST || '',
+    guildId: process.env.GUILD_ID_BRYD || '',
     adapterCreator: interaction.guild.voiceAdapterCreator,
   });
 
