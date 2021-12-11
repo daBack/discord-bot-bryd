@@ -6,6 +6,7 @@
   "scripts": {
     "start": "nodemon",
     "update-commands": "npx ts-node ./src/utils/slashCommands/setupCommandsInDiscord.ts",
+    "upload-clips": "npx ts-node ./src/utils/firebase/FirebaseStorage.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rimraf ./build && npm run update-commands && tsc",
     "start:prod": "npm run build && node build/index.js",
@@ -21,6 +22,7 @@
     "discord.js": "^13.3.1",
     "dotenv": "^10.0.0",
     "ffmpeg-static": "^4.4.0",
+    "firebase": "^9.6.0",
     "libsodium-wrappers": "^0.7.9"
   },
   "devDependencies": {

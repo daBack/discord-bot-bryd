@@ -87,6 +87,12 @@ const audioClips: IAudioClips[] = [
     tags: [TagEnum.coffe, TagEnum.flame],
   },
   {
+    name: 'ingendär',
+    filename: 'ingendar.mp3',
+    path: '/assets/',
+    tags: [TagEnum.guss],
+  },
+  {
     name: 'ehne',
     filename: 'ehne.mp3',
     path: '/assets/',
@@ -150,13 +156,43 @@ const audioClips: IAudioClips[] = [
     name: 'försöker',
     filename: 'forsoker.mp3',
     path: '/assets/',
-    tags: [TagEnum.guss, TagEnum.tekarn, TagEnum.bäck, TagEnum.game],
+    tags: [TagEnum.guss, TagEnum.tekarn, TagEnum.bäck, TagEnum.game, TagEnum.flame],
   },
   {
     name: 'penta',
     filename: 'penta.mp3',
     path: '/assets/',
     tags: [TagEnum.guss, TagEnum.tekarn, TagEnum.bäck, TagEnum.game, TagEnum.coffe],
+  },
+  {
+    name: 'fizz',
+    filename: 'fizz.mp3',
+    path: '/assets/',
+    tags: [TagEnum.guss, TagEnum.tekarn, TagEnum.game],
+  },
+  {
+    name: 'implementera',
+    filename: 'implementera.mp3',
+    path: '/assets/',
+    tags: [TagEnum.guss, TagEnum.jonte],
+  },
+  {
+    name: 'vokabulär',
+    filename: 'vokabular.mp3',
+    path: '/assets/',
+    tags: [TagEnum.guss, TagEnum.jonte, TagEnum.tekarn],
+  },
+  {
+    name: 'ordförråd',
+    filename: 'ordforrad.mp3',
+    path: '/assets/',
+    tags: [TagEnum.guss, TagEnum.jonte],
+  },
+  {
+    name: 'lambo',
+    filename: 'lambo.mp3',
+    path: '/assets/',
+    tags: [TagEnum.tekarn],
   },
 ];
 
