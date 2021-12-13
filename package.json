@@ -4,12 +4,12 @@
   "description": "A meme bot for the bryd channel",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon",
+    "start:dev": "nodemon",
     "update-commands": "npx ts-node ./src/utils/slashCommands/setupCommandsInDiscord.ts",
     "upload-clips": "npx ts-node ./src/utils/firebase/FirebaseStorage.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rimraf ./build && tsc",
-    "start:prod": "npm run build && node build/index.js",
+    "start": "npm run build && node build/index.js",
     "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix"
   },
   "author": "daBack",
