@@ -1,5 +1,5 @@
-import TagEnum from './enums/TagEnum';
-import IAudioClips from './types/IAudioClips';
+import TagEnum from '../enums/TagEnum';
+import IAudioClips from '../types/IAudioClips';
 
 const audioClips: IAudioClips[] = [
   {

@@ -13,7 +13,7 @@ import {
 import { AudioRouter } from './commands/audio';
 import { exit } from 'process';
 import commands from './utils/slashCommands/Commands';
-import { Sounds } from './utils/sounds';
+import { audioClips } from './utils/sounds';
 if (!process.env.GUILD_ID_TEST || !process.env.BOT_TOKEN || !process.env.CLIENT_ID) {
   throw new Error('Procces.env keys are not set. Set them up according to the README file found on github');
   exit;
@@ -115,7 +115,7 @@ const getFollowUpMessage = async (interaction: CommandInteraction, names) => {
 };
 
 const getEmbeddedFieldsOfClips = (): EmbedFieldData[] => {
-  const filedArray = Sounds.map((clip) => {
+  const filedArray = audioClips.map((clip) => {
     const data: EmbedFieldData = { name: clip.name, value: '_____', inline: true };
     return data;
   });
