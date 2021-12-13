@@ -23,6 +23,11 @@ jobs:
           npm install
           npm run build --if-present
           npm run test --if-present
+        env:
+          BOT_TOKEN: ${{ env.BOT_TOKEN }}
+          CLIENT_ID: ${{ env.CLIENT_ID }}
+          GUILD_ID_TEST: ${{ env.GUILD_ID_TEST }}
+          GUILD_ID_BRYD: ${{ env.GUILD_ID_BRYD }}
       - name: 'Deploy to Azure WebApp'
         uses: azure/webapps-deploy@v2
         with:
