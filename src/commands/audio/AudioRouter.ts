@@ -9,7 +9,7 @@ import {
   VoiceConnection,
 } from '@discordjs/voice';
 import { join } from 'path';
-import { IAudioClips, Sounds } from '../../utils/sounds';
+import { IAudioClips, audioClips } from '../../utils/sounds';
 import { initializeFirebase } from '../../utils/firebase';
 import { FirebaseApp } from 'firebase/app';
 import { getDownloadURL, getStorage, listAll, ref } from 'firebase/storage';
@@ -63,7 +63,7 @@ const getClip = async (options: {
   const { commandQuery, firebaseApp } = options;
 
   const storage = getStorage(firebaseApp);
-  const clip = Sounds.find((clip) => commandQuery === clip.name);
+  const clip = audioClips.find((clip) => commandQuery === clip.name);
   const pathRef = ref(storage, `clips/${clip?.filename}`);
   let downloadUrl: string;
   try {

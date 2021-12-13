@@ -2,14 +2,14 @@ import { FirebaseApp } from '@firebase/app';
 import { getStorage, ref, uploadBytes, UploadMetadata } from 'firebase/storage';
 import initializeFirebase from './InitializeFirebase';
 import fs from 'fs';
-import { Sounds } from '../sounds';
+import { audioClips } from '../sounds';
 import { join } from 'path';
 // Get a reference to the storage service, which is used to create references in your storage bucket
 
 const app: FirebaseApp = initializeFirebase();
 const storage = getStorage(app);
 
-Sounds.forEach(async (clip) => {
+audioClips.forEach(async (clip) => {
   let soundFile: Blob | ArrayBuffer;
   try {
     soundFile = fs.readFileSync(join(__dirname + '/../../assets/', clip.filename));
