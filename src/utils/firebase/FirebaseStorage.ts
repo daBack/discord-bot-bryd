@@ -1,15 +1,15 @@
 import { FirebaseApp } from '@firebase/app';
-import { getStorage, ref, uploadBytes } from 'firebase/storage';
+import { getStorage, ref, uploadBytes, UploadMetadata } from 'firebase/storage';
 import initializeFirebase from './InitializeFirebase';
 import fs from 'fs';
-import { Sounds } from '../sounds';
+import { audioClips } from '../sounds';
 import { join } from 'path';
 // Get a reference to the storage service, which is used to create references in your storage bucket
 
 const app: FirebaseApp = initializeFirebase();
 const storage = getStorage(app);
 
-Sounds.forEach(async (clip) => {
+audioClips.forEach(async (clip) => {
   let soundFile: Blob | ArrayBuffer;
   try {
     soundFile = fs.readFileSync(join(__dirname + '/../../assets/', clip.filename));
@@ -19,7 +19,10 @@ Sounds.forEach(async (clip) => {
 
   try {
     const storageRef = ref(storage, `clips/${clip.filename}`);
-    await uploadBytes(storageRef, soundFile);
+    const metadata: UploadMetadata = {
+      contentDisposition: `name="${clip.name}"`,
+    };
+    await uploadBytes(storageRef, soundFile, metadata);
     console.log(`Successfully uploaded ${clip.filename} to Firebase`);
   } catch (error) {
     throw new Error(`Could not upload file to firebase storage, Error: ${error}`);

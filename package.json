@@ -4,12 +4,12 @@
   "description": "A meme bot for the bryd channel",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon",
+    "start:dev": "nodemon",
     "update-commands": "npx ts-node ./src/utils/slashCommands/setupCommandsInDiscord.ts",
     "upload-clips": "npx ts-node ./src/utils/firebase/FirebaseStorage.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rimraf ./build && npm run update-commands && tsc",
-    "start:prod": "npm run build && node build/index.js",
+    "build": "tsc",
+    "start": "node build/index.js",
     "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix"
   },
   "author": "daBack",
@@ -23,6 +23,7 @@
     "dotenv": "^10.0.0",
     "ffmpeg-static": "^4.4.0",
     "firebase": "^9.6.0",
+    "rimraf": "^3.0.2",
     "libsodium-wrappers": "^0.7.9"
   },
   "devDependencies": {
@@ -36,7 +37,6 @@
     "husky": "^7.0.4",
     "nodemon": "^2.0.15",
     "prettier": "^2.5.0",
-    "rimraf": "^3.0.2",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.2"
   },
